@@ -5,8 +5,10 @@ $(document).ready(() => {
     async function convertCSV(e) {
         let csvFile = await e.target.files[0].text();
         let csvArray = $.csv.toObjects(csvFile);
+        let fileProgressEl = document.getElementById("fileProgress");
+        fileProgressEl.setAttribute("max", csvArray.length);
         let zip = new JSZip();
-
+        console.time("File Generator")
 
         for (let i = 0; i < csvArray.length; i++) {
             //in this case we are given the filename as part of the mockaroo output
@@ -15,12 +17,17 @@ $(document).ready(() => {
             let fileText = csvArray[i].body;
             //create the file from the above choices
             zip.file(fileName, fileText);
+            fileProgressEl.setAttribute("value", i);
+            let filePercentage = Math.floor((i / csvArray.length) * 100);
+            fileProgressEl.innerText = `${filePercentage}%`;
+            console.log(i);
         }
 
         //create the zip file as a blob
         let zipFileToSave = await zip.generateAsync({
             type: "blob"
         });
+        console.timeEnd("File Generator")
         //trigger a download
         saveAs(zipFileToSave, "download.zip");
     }
