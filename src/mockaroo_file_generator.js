@@ -12,7 +12,7 @@ $(document).ready(() => {
 
         for (let i = 0; i < csvArray.length; i++) {
             //in this case we are given the filename as part of the mockaroo output
-            let fileName = csvArray[i].filename;
+            let fileName = zip.files[csvArray[i].filename] ? `${i}-${csvArray[i].filename}` : csvArray[i].filename;
             //the property in particular to set as the text file
             let fileText = csvArray[i].body;
             //create the file from the above choices
@@ -20,7 +20,6 @@ $(document).ready(() => {
             fileProgressEl.setAttribute("value", i);
             let filePercentage = Math.floor((i / csvArray.length) * 100);
             fileProgressEl.innerText = `${filePercentage}%`;
-            console.log(i);
         }
 
         //create the zip file as a blob
